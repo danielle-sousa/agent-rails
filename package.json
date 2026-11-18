@@ -1,0 +1,10 @@
+{
+  "name": "agent-rails-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "test": "npm test --workspace agent-rails",
+    "demo": "node examples/simulate-session.mjs"
+  }
+}

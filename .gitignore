@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.angular/
+.agent-rails/.state/
+*.log
+.DS_Store
