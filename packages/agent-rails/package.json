@@ -1,0 +1,23 @@
+{
+  "name": "agent-rails",
+  "version": "0.1.0",
+  "description": "A frontend harness for AI coding agents: one set of guardrails for Claude Code, GitHub Copilot and Cursor.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Danielle Sousa Koscak",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danielle-sousa/agent-rails"
+  },
+  "keywords": ["ai", "agents", "harness", "hooks", "angular", "claude-code", "github-copilot", "cursor", "guardrails"],
+  "bin": {
+    "agent-rails": "./bin/agent-rails.mjs"
+  },
+  "files": ["bin", "runtime", "templates"],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  }
+}
