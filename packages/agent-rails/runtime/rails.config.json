@@ -1,0 +1,63 @@
+{
+  "$comment": "agent-rails policy for an Angular workspace. Paths are relative to the project root.",
+  "projectRoot": "..",
+
+  "protectedPaths": [
+    { "pattern": "**/.env*", "reason": "secrets and environment config", "blockRead": true },
+    { "pattern": "src/environments/environment.prod.ts", "reason": "production configuration" },
+    { "pattern": "package-lock.json", "reason": "dependency changes go through npm, reviewed by a human" },
+    { "pattern": "angular.json", "reason": "build and deploy configuration" },
+    { "pattern": "eslint.config.js", "reason": "lint rules are the guardrail; the agent should not loosen them" },
+    { "pattern": ".agent-rails/**", "reason": "the harness itself" },
+    { "pattern": ".claude/settings.json", "reason": "the harness itself" },
+    { "pattern": ".github/hooks/**", "reason": "the harness itself" },
+    { "pattern": ".cursor/hooks.json", "reason": "the harness itself" },
+    { "pattern": "dist/**", "reason": "build output" },
+    { "pattern": ".angular/**", "reason": "build cache" }
+  ],
+
+  "blockedCommands": [
+    { "pattern": "\\brm\\s+-[a-zA-Z]*r[a-zA-Z]*f|\\brm\\s+-[a-zA-Z]*f[a-zA-Z]*r", "reason": "recursive delete" },
+    { "pattern": "\\bgit\\s+push\\b", "reason": "pushing is a human decision" },
+    { "pattern": "\\bgit\\s+(reset\\s+--hard|clean\\s+-[a-zA-Z]*f)", "reason": "discards work" },
+    { "pattern": "\\bnpm\\s+(publish|unpublish)\\b", "reason": "publishing is a human decision" },
+    { "pattern": "\\b(npm\\s+(i|install|add)|npx\\s+ng\\s+add|ng\\s+add)\\s+[^-\\s]", "reason": "new dependencies need human review (supply chain)" },
+    { "pattern": "--no-verify", "reason": "bypasses git hooks" },
+    { "pattern": "\\b(curl|wget)\\b[^|]*\\|\\s*(ba|z)?sh", "reason": "pipes remote code into a shell" }
+  ],
+
+  "fileChecks": [
+    {
+      "name": "eslint (TypeScript + template accessibility)",
+      "extensions": [".ts", ".html"],
+      "command": "npx eslint --max-warnings=0 {files}"
+    },
+    {
+      "name": "no-suppressions",
+      "extensions": [".ts", ".html"],
+      "builtin": "no-suppressions"
+    },
+    {
+      "name": "design-tokens",
+      "extensions": [".scss", ".css"],
+      "builtin": "design-tokens"
+    }
+  ],
+
+  "gate": {
+    "watch": ["src/**"],
+    "maxRetries": 2,
+    "checks": [
+      { "name": "no-suppressions", "builtin": "no-suppressions", "extensions": [".ts", ".html"] },
+      { "name": "design-tokens", "builtin": "design-tokens", "extensions": [".scss", ".css"] },
+      { "name": "typecheck", "command": "npx tsc --noEmit -p tsconfig.app.json" },
+      { "name": "lint", "command": "npx eslint --max-warnings=0 src" },
+      { "name": "unit tests", "command": "npx ng test --watch=false" }
+    ]
+  },
+
+  "designTokens": {
+    "tokensFile": "src/styles/_tokens.scss",
+    "scope": ["src/app/**"]
+  }
+}
